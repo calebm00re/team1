@@ -2,8 +2,12 @@ const knex = require('../database/knex.js');
 //const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
+
+
 const USER_TABLE = 'users';
 
+
+//REMEMBER TO SCROLL TO THE BOTTOM TO ADD EXPORTS
 
 
 const createNewUser = async (firstName, lastName, email, password) => {
@@ -56,7 +60,8 @@ const checkIfValidEmail = (email) => {
     return re.test(String(email).toLowerCase());
 };
 
-getIDFromEmail = async(email) => { //so, this doesn't work when I set it to be constant
+
+getIDFromEmail = async (email) => { //so, this doesn't work when I set it to be constant
     const users = await findUserByEmail(email);
     if (users.length === 0) {
         console.error(`No users matched the email: ${email}`);
@@ -68,16 +73,19 @@ getIDFromEmail = async(email) => { //so, this doesn't work when I set it to be c
 
 
 
+
 const findUserByEmail = async (email) => {
     const query = knex(USER_TABLE).where({ email });
     const result = await query;
     return result;
 }
 
-
-
+//this is Javascripts version of public / private.
+//Make sure that all of the functions you call in other files are on this list
 module.exports = {
     createNewUser,
     findUserByEmail,
-    authenticateUser
+    authenticateUser,
+    getIDFromEmail
 };
+

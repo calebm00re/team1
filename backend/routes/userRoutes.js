@@ -31,21 +31,14 @@ router.post('/register', async (req, res, next) => {
 router.get('/id/:email', async (req, res, next) => {
     try {
         const email = req.params.email;
-        /*
+
+
         const result = await users.getIDFromEmail(email);
-        if(result == -1){
-            res.status(500).json({message: "User not found"});
+        if(result === -1){
+            res.status(300).json({message: "User not found"});
         } else {
             res.status(200).json(result);
         }
-        */
-        const result = await users.findUserByEmail(email);
-        if(result.length == 0){
-            res.status(500).json({message: "User not found"});
-        } else {
-            res.status(200).json(result[0].id);
-        }
-
     } catch (err) {
         console.error('Failed to get user id:', err);
         res.status(500).json({ message: err.toString() });
