@@ -16,7 +16,7 @@ const createNewUser = async (firstName, lastName, email, password) => {
     const hashedPassword = crypto.createHash('sha256').update(salt + password).digest('hex');
     console.log('Hashed password', hashedPassword);
     //checks to see if email given is a valid email
-    const isValidEmail = checkIfValid(email);
+    const isValidEmail = checkIfValidEmail(email);
     if (!isValidEmail) {
         throw new Error('Invalid email');
     }
@@ -33,17 +33,6 @@ const createNewUser = async (firstName, lastName, email, password) => {
 
 };
 
-const checkIfValid = (email) => {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-};
-
-
-const findUserByEmail = async (email) => {
-    const query = knex(USER_TABLE).where({ email });
-    const result = await query;
-    return result;
-}
 
 const authenticateUser = async (email, password) => {
     const users = await findUserByEmail(email);
@@ -53,13 +42,36 @@ const authenticateUser = async (email, password) => {
         return false;
     }
     const user = users[0];
- //   const validPassword = await bcrypt.compare(password, user.password);
+    //   const validPassword = await bcrypt.compare(password, user.password);
 
     const validPassword = crypto.createHash('sha256').update(user.salt + password).digest('hex') === user.password;
     if (validPassword) {
         return true;
     }
     return false;
+}
+
+const checkIfValidEmail = (email) => {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+};
+
+getIDFromEmail = async(email) => { //so, this doesn't work when I set it to be constant
+    const users = await findUserByEmail(email);
+    if (users.length === 0) {
+        console.error(`No users matched the email: ${email}`);
+        return -1;
+    }
+    const user = users[0];
+    return user.id;
+}
+
+
+
+const findUserByEmail = async (email) => {
+    const query = knex(USER_TABLE).where({ email });
+    const result = await query;
+    return result;
 }
 
 
