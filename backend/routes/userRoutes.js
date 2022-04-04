@@ -47,4 +47,23 @@ router.get('/id/:email', async (req, res, next) => {
     next();
 })
 
+//get info route. Given the id of a of a user, return the info of that user
+router.get('/get_info/:id', async (req, res, next) => {
+    try{
+        const result = await users.getInfoFromID(req.params.id);
+        //error checking
+        if(result.error === true){
+            res.status(300).json({message: "User not found"})
+            console.log("user not found");
+        } else {
+            console.log("User found" + result);
+            res.status(200).json(result);
+        }
+
+    } catch (err) {
+        console.error('Failed to get user info:', err);
+        res.status(500).json({ message: err.toString() });
+    }
+})
+
 module.exports = router;

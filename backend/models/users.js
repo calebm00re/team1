@@ -62,7 +62,7 @@ const checkIfValidEmail = (email) => {
 
 
 getIDFromEmail = async (email) => { //so, this doesn't work when I set it to be constant
-    const users = await findUserByEmail(email);
+    const users = await findUserByEmail(email); //checks that email is valid
     if (users.length === 0) {
         console.error(`No users matched the email: ${email}`);
         return -1;
@@ -80,12 +80,24 @@ const findUserByEmail = async (email) => {
     return result;
 }
 
+const getInfoFromID = async (id) => {
+    const query = knex(USER_TABLE).where({ id });
+    if(query.length === 0) {
+        console.error(`No users matched the id: ${id}`);
+        return {error: true};
+    }
+    result = await query;
+    result.error = false;
+    return result;
+}
+
 //this is Javascripts version of public / private.
 //Make sure that all of the functions you call in other files are on this list
 module.exports = {
     createNewUser,
     findUserByEmail,
     authenticateUser,
-    getIDFromEmail
+    getIDFromEmail,
+    getInfoFromID
 };
 
